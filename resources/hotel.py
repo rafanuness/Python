@@ -84,6 +84,7 @@ class Hotel(Resource):
         if hotel:
             hotel.update(novo_hotel)
             return novo_hotel, 200
+            
 
         hoteis.append(novo_hotel)
         return novo_hotel, 201
