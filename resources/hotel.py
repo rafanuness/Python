@@ -1,5 +1,6 @@
+from typing_extensions import Required
 from flask_restful import  Resource, reqparse
-
+from models.hotel_model import HotelModel
 
 hoteis= [
     {
@@ -26,7 +27,6 @@ hoteis= [
         'diaria': 820.34
     }
 ]
-
 
 class Hoteis(Resource):
     def get(self):
@@ -60,10 +60,8 @@ class Hotel(Resource):
         
         dados = Hotel.argumentos.parse_args()
 
-        novo_hotel = {
-            'hotel_id': hotel_id,
-            **dados
-        }
+        objHotel = HotelModel(hotel_id, **dados) 
+        novo_hotel = objHotel.json()      
 
         hoteis.append(novo_hotel)
 
@@ -74,10 +72,8 @@ class Hotel(Resource):
 
         dados = Hotel.argumentos.parse_args()
 
-        novo_hotel = {
-            'hotel_id': hotel_id,
-            **dados
-        }
+        objHotel = HotelModel(hotel_id, **dados) 
+        novo_hotel = objHotel.json()   
 
         hotel = Hotel.find_hotel(hotel_id)
 
@@ -90,4 +86,16 @@ class Hotel(Resource):
         return novo_hotel, 201
 
     def delete(self, hotel_id):
-        pass
+        hotel = Hotel.find_hotel(hotel_id)
+        if hotel is None:
+            return {'message': 'Hotel não encontrado!'}, 404
+
+        global hoteis
+        hoteis = [hotel for hotel in hoteis if hotel['hotel_id'] != hotel_id]
+        return {"message":"Hotel removido"}, 200
+        
+        
+
+        
+
+        
